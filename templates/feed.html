@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Feed</title>
+		<link
+			rel="stylesheet"
+			href="/static/style.css"
+		/>
+	</head>
+	<body>
+		<div class="container">
+			<h2>Welcome, {{ username }}!</h2>
+			<p>
+				<a
+					href="/logout"
+					class="logout-btn"
+					>Logout</a
+				>
+			</p>
+			<div class="form-card">
+				<h3 style="margin-bottom: 10px">Create a new post</h3>
+				<form method="post">
+					<textarea
+						name="content"
+						placeholder="What's on your mind?"
+						required
+					></textarea>
+					<button type="submit">Post</button>
+				</form>
+			</div>
+			<h3>Feed</h3>
+			<div class="feed-list">
+				{% for post in posts %}
+				<div class="post" data-post-id="{{ post.id }}">
+					<div class="avatar">{{ post.username[0]|upper }}</div>
+					<div class="post-content">
+						<div class="post-header">
+							<span class="post-username">{{ post.username }}</span>
+							<span class="date">{{ post.created_at }}</span>
+						</div>
+						<div style="font-size: 1.13em; margin-top: 6px">
+							{{ post.content }}
+						</div>
+						<div class="like-row">
+							<button class="like-btn" data-liked="{{ 1 if post.liked_by_user else 0 }}">
+								<span class="like-icon">&#x2764;</span> <span class="like-text">{{ 'Unlike' if post.liked_by_user else 'Like' }}</span>
+							</button>
+							<span class="like-count" style="cursor:pointer;" title="See who liked" onclick="showLikesModal({{ post.id }})">{{ post.like_count }} like{% if post.like_count == 1 %}{% else %}s{% endif %}</span>
+						</div>
+					</div>
+					{% if post.user_id == user_id %}
+					<div class="post-actions">
+						<a href="/delete_post/{{ post.id }}">Delete</a>
+					</div>
+					{% endif %}
+				</div>
+				{% endfor %}
+			</div>
+
+			<!-- Likes Modal -->
+			<div id="likesModal" class="modal" style="display:none;">
+				<div class="modal-content">
+					<span class="close" onclick="closeLikesModal()">&times;</span>
+					<h3>Liked by</h3>
+					<ul id="likesList"></ul>
+				</div>
+			</div>
+
+			<script>
+			document.addEventListener('DOMContentLoaded', function() {
+				// Like/unlike logic
+				document.querySelectorAll('.like-btn').forEach(function(btn) {
+					btn.addEventListener('click', function(e) {
+						e.preventDefault();
+						var postDiv = btn.closest('.post');
+						var postId = postDiv.getAttribute('data-post-id');
+						var liked = btn.getAttribute('data-liked') === '1';
+						fetch((liked ? '/unlike_post/' : '/like_post/') + postId, {method: 'POST'})
+							.then(r => r.json())
+							.then(data => {
+								if(data.success) {
+									btn.setAttribute('data-liked', liked ? '0' : '1');
+									btn.querySelector('.like-text').textContent = liked ? 'Like' : 'Unlike';
+									postDiv.querySelector('.like-count').textContent = data.like_count + (data.like_count == 1 ? ' like' : ' likes');
+								}
+							});
+					});
+				});
+			});
+
+			// Show likes modal
+			function showLikesModal(postId) {
+				fetch('/post_likes/' + postId)
+					.then(r => r.json())
+					.then(data => {
+						var likesList = document.getElementById('likesList');
+						likesList.innerHTML = '';
+						if(data.users.length === 0) {
+							likesList.innerHTML = '<li>No likes yet</li>';
+						} else {
+							data.users.forEach(function(username) {
+								var li = document.createElement('li');
+								li.textContent = username;
+								likesList.appendChild(li);
+							});
+						}
+						document.getElementById('likesModal').style.display = 'block';
+					});
+			}
+			function closeLikesModal() {
+				document.getElementById('likesModal').style.display = 'none';
+			}
+			// Close modal on outside click
+			window.onclick = function(event) {
+				var modal = document.getElementById('likesModal');
+				if (event.target == modal) {
+					modal.style.display = 'none';
+				}
+			}
+			</script>
+		</div>
+	</body>
+</html>

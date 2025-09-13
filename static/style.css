@@ -1,0 +1,255 @@
+.center-box {
+	max-width: 370px;
+	margin: 70px auto 0 auto;
+	background: #fff;
+	border-radius: 12px;
+	box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+	padding: 36px 30px 30px 30px;
+	text-align: center;
+}
+.center-box form {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+.center-box input,
+.center-box button {
+	max-width: 300px;
+	width: 100%;
+}
+body {
+	font-family: "Segoe UI", Arial, sans-serif;
+	background: #f4f6fa;
+	margin: 0;
+	padding: 0;
+}
+
+.container {
+	max-width: 600px;
+	margin: 40px auto 0 auto;
+	background: #fff;
+	border-radius: 14px;
+	box-shadow: 0 6px 32px rgba(0, 0, 0, 0.1);
+	padding: 32px 28px 36px 28px;
+}
+
+h2,
+h3,
+a,
+p {
+	text-align: center;
+	margin-top: 0;
+}
+
+.logout-btn {
+	min-width: 340px;
+	display: inline-block;
+	background: #e74c3c;
+	color: #fff !important;
+	padding: 7px 18px;
+	border-radius: 5px;
+	text-decoration: none;
+	font-size: 1em;
+	margin-bottom: 18px;
+	margin-top: 8px;
+	transition: background 0.2s;
+}
+.logout-btn:hover {
+	background: #c0392b;
+}
+
+.form-card {
+	background: #f8fafd;
+	border-radius: 10px;
+	text-align: center;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+	padding: 18px 20px 14px 20px;
+	margin-bottom: 30px;
+}
+form {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+input,
+textarea {
+	margin: 7px 0;
+	max-width: 520px;
+	margin-left: auto;
+	margin-right: auto;
+	padding: 10px;
+	width: 100%;
+	border: 1px solid #d0d7e2;
+	border-radius: 5px;
+	font-size: 1em;
+	resize: vertical;
+	background: #fff;
+}
+textarea {
+	min-height: 80px;
+}
+button {
+	padding: 10px 24px;
+	background: #007bff;
+	color: #fff;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+	margin-top: 10px;
+	font-size: 1em;
+	font-weight: 500;
+	transition: background 0.2s;
+}
+button:hover {
+	background: #0056b3;
+}
+.feed-list {
+	margin-top: 18px;
+}
+.post {
+	background: #f9fafd;
+	margin: 22px 0;
+	padding: 18px 18px 12px 18px;
+	border-radius: 10px;
+	box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	max-width: 520px;
+	margin-left: auto;
+	margin-right: auto;
+	position: relative;
+	min-height: 60px;
+}
+.avatar {
+	width: 44px;
+	height: 44px;
+	border-radius: 50%;
+	background: black;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	max-width: 100%;
+	font-weight: bold;
+	color: #fff;
+	font-size: 1.3em;
+	flex-shrink: 0;
+	margin-top: 2px;
+	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.07);
+}
+.post-content {
+	flex: 1;
+	text-align: left;
+}
+.post-header {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	margin-bottom: 4px;
+}
+.post-username {
+	font-weight: bold;
+	color: #007bff;
+	font-size: 1.08em;
+}
+.date {
+	color: #888;
+	font-size: 0.97em;
+}
+.post-actions {
+	position: absolute;
+	top: 14px;
+	right: 18px;
+}
+.post-actions a {
+	color: #e74c3c;
+	text-decoration: none;
+	font-size: 1em;
+	padding: 3px 10px;
+	border-radius: 4px;
+	transition: background 0.2s;
+	background: #fff0f0;
+	font-weight: 500;
+}
+.post-actions a:hover {
+	background: #ffeaea;
+}
+.error {
+	color: red;
+}
+
+/* Like button and row */
+.like-row {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	margin-top: 10px;
+}
+.like-btn {
+	margin-top: 0;
+	background: none;
+	border: none;
+	color: #e74c3c;
+	font-size: 1em;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	font-weight: 500;
+	padding: 0;
+	border-radius: 4px;
+	transition: background 0.2s;
+}
+.like-btn[data-liked="1"] .like-icon {
+	color: #e74c3c;
+}
+.like-btn[data-liked="0"] .like-icon {
+	color: #aaa;
+}
+.like-btn:hover {
+	background: #ffeaea;
+}
+
+/* Modal styles */
+.modal {
+	display: none;
+	position: fixed;
+	z-index: 1000;
+	left: 0;
+	top: 0;
+	width: 100vw;
+	height: 100vh;
+	overflow: auto;
+	background-color: rgba(0, 0, 0, 0.2);
+}
+.modal-content {
+	background-color: #fff;
+	margin: 80px auto;
+	padding: 24px 30px 18px 30px;
+	border: 1px solid #888;
+	width: 320px;
+	border-radius: 10px;
+	box-shadow: 0 4px 24px rgba(0, 0, 0, 0.13);
+	text-align: center;
+}
+.modal-content ul {
+	list-style: none;
+	padding: 0;
+	margin: 10px 0 0 0;
+}
+.modal-content li {
+	padding: 4px 0;
+	font-size: 1.08em;
+}
+.close {
+	color: #aaa;
+	float: right;
+	font-size: 1.5em;
+	font-weight: bold;
+	cursor: pointer;
+	margin-top: -10px;
+	margin-right: -8px;
+}
+.close:hover {
+	color: #e74c3c;
+}
