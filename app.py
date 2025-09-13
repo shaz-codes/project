@@ -7,10 +7,34 @@ app.secret_key = 'supersecretkey'  # For session management
 db = mysql.connector.connect(
     host='localhost',
     user='root',
-    password='root', 
+    password='root',
     database='simple_social'
 )
 cursor = db.cursor(dictionary=True)
+
+@app.route('/feed_partial')
+def feed_partial():
+    if 'user_id' not in session:
+        return '', 401
+    cursor.execute('''SELECT posts.id, posts.content, posts.created_at, users.username, posts.user_id 
+                      FROM posts JOIN users ON posts.user_id = users.id 
+                      ORDER BY posts.created_at DESC''')
+    posts = cursor.fetchall()
+    post_ids = [post['id'] for post in posts]
+    like_counts = {}
+    user_likes = set()
+    if post_ids:
+        format_strings = ','.join(['%s'] * len(post_ids))
+        cursor.execute(f'SELECT post_id, COUNT(*) as cnt FROM post_likes WHERE post_id IN ({format_strings}) GROUP BY post_id', tuple(post_ids))
+        for row in cursor.fetchall():
+            like_counts[row['post_id']] = row['cnt']
+        cursor.execute(f'SELECT post_id FROM post_likes WHERE user_id=%s AND post_id IN ({format_strings})', (session['user_id'], *post_ids))
+        user_likes = set(row['post_id'] for row in cursor.fetchall())
+    for post in posts:
+        post['like_count'] = like_counts.get(post['id'], 0)
+        post['liked_by_user'] = post['id'] in user_likes
+    # Render only the feed-list part
+    return render_template('feed_partial.html', posts=posts, user_id=session['user_id'])
 
 @app.route('/')
 def home():
