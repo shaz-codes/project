@@ -67,25 +67,57 @@
 			</div>
 
 			<script>
+			// Persist textarea content using localStorage
 			document.addEventListener('DOMContentLoaded', function() {
-				// Like/unlike logic
-				document.querySelectorAll('.like-btn').forEach(function(btn) {
-					btn.addEventListener('click', function(e) {
-						e.preventDefault();
-						var postDiv = btn.closest('.post');
-						var postId = postDiv.getAttribute('data-post-id');
-						var liked = btn.getAttribute('data-liked') === '1';
-						fetch((liked ? '/unlike_post/' : '/like_post/') + postId, {method: 'POST'})
-							.then(r => r.json())
-							.then(data => {
-								if(data.success) {
-									btn.setAttribute('data-liked', liked ? '0' : '1');
-									btn.querySelector('.like-text').textContent = liked ? 'Like' : 'Unlike';
-									postDiv.querySelector('.like-count').textContent = data.like_count + (data.like_count == 1 ? ' like' : ' likes');
-								}
-							});
+				var textarea = document.querySelector('.form-card textarea[name="content"]');
+				if (textarea) {
+					// Restore
+					textarea.value = localStorage.getItem('post_content') || '';
+					// Save on input
+					textarea.addEventListener('input', function() {
+						localStorage.setItem('post_content', textarea.value);
 					});
-				});
+					// Clear on submit
+					textarea.form.addEventListener('submit', function() {
+						localStorage.removeItem('post_content');
+					});
+				}
+
+				// Like/unlike logic
+				function attachLikeListeners() {
+					document.querySelectorAll('.like-btn').forEach(function(btn) {
+						btn.onclick = function(e) {
+							e.preventDefault();
+							var postDiv = btn.closest('.post');
+							var postId = postDiv.getAttribute('data-post-id');
+							var liked = btn.getAttribute('data-liked') === '1';
+							fetch((liked ? '/unlike_post/' : '/like_post/') + postId, {method: 'POST'})
+								.then(r => r.json())
+								.then(data => {
+									if(data.success) {
+										btn.setAttribute('data-liked', liked ? '0' : '1');
+										btn.querySelector('.like-text').textContent = liked ? 'Like' : 'Unlike';
+										postDiv.querySelector('.like-count').textContent = data.like_count + (data.like_count == 1 ? ' like' : ' likes');
+									}
+								});
+						};
+					});
+				}
+				attachLikeListeners();
+
+				// Auto-refresh feed-list every 10s
+				function refreshFeed() {
+					fetch('/feed_partial')
+						.then(r => r.text())
+						.then(html => {
+							var feedList = document.querySelector('.feed-list');
+							if (feedList) {
+								feedList.innerHTML = html;
+								attachLikeListeners();
+							}
+						});
+				}
+				setInterval(refreshFeed, 10000);
 			});
 
 			// Show likes modal

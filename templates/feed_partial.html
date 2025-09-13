@@ -1,0 +1,25 @@
+{% for post in posts %}
+<div class="post" data-post-id="{{ post.id }}">
+	<div class="avatar">{{ post.username[0]|upper }}</div>
+	<div class="post-content">
+		<div class="post-header">
+			<span class="post-username">{{ post.username }}</span>
+			<span class="date">{{ post.created_at }}</span>
+		</div>
+		<div style="font-size: 1.13em; margin-top: 6px">
+			{{ post.content }}
+		</div>
+		<div class="like-row">
+			<button class="like-btn" data-liked="{{ 1 if post.liked_by_user else 0 }}">
+				<span class="like-icon">&#x2764;</span> <span class="like-text">{{ 'Unlike' if post.liked_by_user else 'Like' }}</span>
+			</button>
+			<span class="like-count" style="cursor:pointer;" title="See who liked" onclick="showLikesModal({{ post.id }})">{{ post.like_count }} like{% if post.like_count == 1 %}{% else %}s{% endif %}</span>
+		</div>
+	</div>
+	{% if post.user_id == user_id %}
+	<div class="post-actions">
+		<a href="/delete_post/{{ post.id }}">Delete</a>
+	</div>
+	{% endif %}
+</div>
+{% endfor %}
